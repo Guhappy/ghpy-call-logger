@@ -94,6 +94,23 @@ class ProjectLogger {
                 this.hideProjectModal();
             }
         });
+
+        // Add Enter key shortcut for log form submission
+        document.getElementById('logForm').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (e.target.tagName === 'TEXTAREA') {
+                    // In textarea: Enter submits, Shift+Enter adds new line
+                    if (!e.shiftKey) {
+                        e.preventDefault();
+                        this.addLogEntry();
+                    }
+                } else {
+                    // In other fields: Enter submits
+                    e.preventDefault();
+                    this.addLogEntry();
+                }
+            }
+        });
     }
 
     addProject() {
@@ -119,6 +136,24 @@ class ProjectLogger {
 
         document.getElementById('selectedProjectId').value = project.id;
         document.getElementById('projectSearch').value = `${project.name} ${project.location ? '- ' + project.location : ''}`;
+        this.hideProjectDropdown();
+    }
+
+    createQuickProject(projectName) {
+        const project = {
+            id: Date.now().toString(),
+            name: projectName,
+            location: '',
+            description: '',
+            createdAt: new Date().toISOString()
+        };
+
+        this.projects.push(project);
+        this.saveProjects();
+        this.populateProjectSelects();
+        
+        document.getElementById('selectedProjectId').value = project.id;
+        document.getElementById('projectSearch').value = project.name;
         this.hideProjectDropdown();
     }
 
@@ -155,8 +190,22 @@ class ProjectLogger {
         const dropdown = document.getElementById('projectDropdown');
         
         if (projects.length === 0) {
-            dropdown.innerHTML = '<div class="dropdown-item no-results">No projects found</div>';
+            const searchTerm = document.getElementById('projectSearch').value.trim();
+            dropdown.innerHTML = `
+                <div class="dropdown-item no-results">No projects found</div>
+                ${searchTerm ? `<div class="dropdown-item create-new" data-create-project="${searchTerm}">
+                    <div class="project-name">+ Create "${searchTerm}" as new project</div>
+                </div>` : ''}
+            `;
             dropdown.style.display = 'block';
+            
+            // Add click listener for create new project option
+            const createNewItem = dropdown.querySelector('.create-new');
+            if (createNewItem) {
+                createNewItem.addEventListener('click', () => {
+                    this.createQuickProject(searchTerm);
+                });
+            }
             return;
         }
 
@@ -227,6 +276,9 @@ class ProjectLogger {
         document.getElementById('selectedProjectId').value = '';
         this.hideProjectDropdown();
         this.setCurrentTime();
+        
+        // Set focus back to project search for quick data entry
+        document.getElementById('projectSearch').focus();
         
         alert('Log entry added successfully!');
     }
