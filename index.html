@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Project Logger</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Construction Project Logger</h1>
+            <div class="date-display">
+                <span id="currentDate"></span>
+            </div>
+        </header>
+
+        <main>
+            <section class="log-entry-form">
+                <h2>New Log Entry</h2>
+                <form id="logForm">
+                    <div class="form-group">
+                        <label for="projectSelect">Project:</label>
+                        <select id="projectSelect" required>
+                            <option value="">Select a project...</option>
+                        </select>
+                        <button type="button" id="addProjectBtn">+ Add New Project</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeInput">Time:</label>
+                        <input type="time" id="timeInput" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactType">Contact Type:</label>
+                        <select id="contactType" required>
+                            <option value="">Select type...</option>
+                            <option value="phone">Phone Call</option>
+                            <option value="email">Email</option>
+                            <option value="site-visit">Site Visit</option>
+                            <option value="meeting">Meeting</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactPerson">Contact Person:</label>
+                        <input type="text" id="contactPerson" placeholder="Name of person/company">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="logDescription">Description:</label>
+                        <textarea id="logDescription" rows="4" placeholder="What was discussed or what happened..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="priority">Priority:</label>
+                        <select id="priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="followUp">Follow-up Required:</label>
+                        <input type="checkbox" id="followUp">
+                        <input type="date" id="followUpDate" placeholder="Follow-up date" style="display: none;">
+                    </div>
+
+                    <button type="submit">Add Log Entry</button>
+                </form>
+            </section>
+
+            <section class="project-logs">
+                <h2>Today's Logs</h2>
+                <div class="filter-controls">
+                    <select id="filterProject">
+                        <option value="">All Projects</option>
+                    </select>
+                    <input type="date" id="filterDate">
+                </div>
+                <div id="logsList"></div>
+            </section>
+
+            <section class="export-section">
+                <h2>Export Data</h2>
+                <button id="exportBtn">Export to CSV</button>
+                <button id="clearDataBtn">Clear All Data</button>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for adding new project -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Add New Project</h3>
+            <form id="projectForm">
+                <input type="text" id="projectName" placeholder="Project Name" required>
+                <input type="text" id="projectLocation" placeholder="Location (optional)">
+                <textarea id="projectDescription" placeholder="Project Description (optional)" rows="3"></textarea>
+                <button type="submit">Add Project</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
