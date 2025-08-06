@@ -73,8 +73,23 @@ class ProjectLogger {
             }
         });
 
-        window.addEventListener('click', (e) => {
+        // Project search functionality
+        document.getElementById('projectSearch').addEventListener('input', (e) => {
+            this.handleProjectSearch(e.target.value);
+        });
+
+        document.getElementById('projectSearch').addEventListener('focus', () => {
+            this.showProjectDropdown();
+        });
+
+        document.addEventListener('click', (e) => {
+            const searchContainer = document.querySelector('.project-search-container');
             const modal = document.getElementById('projectModal');
+            
+            if (!searchContainer.contains(e.target)) {
+                this.hideProjectDropdown();
+            }
+            
             if (e.target === modal) {
                 this.hideProjectModal();
             }
@@ -102,11 +117,81 @@ class ProjectLogger {
         this.hideProjectModal();
         document.getElementById('projectForm').reset();
 
-        document.getElementById('projectSelect').value = project.id;
+        document.getElementById('selectedProjectId').value = project.id;
+        document.getElementById('projectSearch').value = `${project.name} ${project.location ? '- ' + project.location : ''}`;
+        this.hideProjectDropdown();
+    }
+
+    handleProjectSearch(searchTerm) {
+        const dropdown = document.getElementById('projectDropdown');
+        const hiddenInput = document.getElementById('selectedProjectId');
+        
+        if (!searchTerm.trim()) {
+            hiddenInput.value = '';
+            this.showAllProjects();
+            return;
+        }
+
+        const filteredProjects = this.projects.filter(project => {
+            const projectText = `${project.name} ${project.location || ''}`.toLowerCase();
+            return projectText.includes(searchTerm.toLowerCase());
+        });
+
+        this.displayProjectDropdown(filteredProjects);
+        hiddenInput.value = '';
+    }
+
+    showProjectDropdown() {
+        this.showAllProjects();
+    }
+
+    showAllProjects() {
+        const dropdown = document.getElementById('projectDropdown');
+        this.displayProjectDropdown(this.projects);
+        dropdown.style.display = 'block';
+    }
+
+    displayProjectDropdown(projects) {
+        const dropdown = document.getElementById('projectDropdown');
+        
+        if (projects.length === 0) {
+            dropdown.innerHTML = '<div class="dropdown-item no-results">No projects found</div>';
+            dropdown.style.display = 'block';
+            return;
+        }
+
+        let html = '';
+        projects.forEach(project => {
+            const displayText = `${project.name} ${project.location ? '- ' + project.location : ''}`;
+            html += `<div class="dropdown-item" data-project-id="${project.id}" data-project-text="${displayText}">
+                        <div class="project-name">${project.name}</div>
+                        ${project.location ? `<div class="project-location">${project.location}</div>` : ''}
+                     </div>`;
+        });
+        
+        dropdown.innerHTML = html;
+        dropdown.style.display = 'block';
+
+        // Add click listeners to dropdown items
+        dropdown.querySelectorAll('.dropdown-item[data-project-id]').forEach(item => {
+            item.addEventListener('click', () => {
+                this.selectProject(item.dataset.projectId, item.dataset.projectText);
+            });
+        });
+    }
+
+    selectProject(projectId, projectText) {
+        document.getElementById('selectedProjectId').value = projectId;
+        document.getElementById('projectSearch').value = projectText;
+        this.hideProjectDropdown();
+    }
+
+    hideProjectDropdown() {
+        document.getElementById('projectDropdown').style.display = 'none';
     }
 
     addLogEntry() {
-        const projectId = document.getElementById('projectSelect').value;
+        const projectId = document.getElementById('selectedProjectId').value;
         const time = document.getElementById('timeInput').value;
         const contactType = document.getElementById('contactType').value;
         const contactPerson = document.getElementById('contactPerson').value.trim();
@@ -138,23 +223,22 @@ class ProjectLogger {
         this.saveLogs();
         this.loadTodaysLogs();
         document.getElementById('logForm').reset();
+        document.getElementById('projectSearch').value = '';
+        document.getElementById('selectedProjectId').value = '';
+        this.hideProjectDropdown();
         this.setCurrentTime();
         
         alert('Log entry added successfully!');
     }
 
     populateProjectSelects() {
-        const projectSelect = document.getElementById('projectSelect');
         const filterProject = document.getElementById('filterProject');
 
-        projectSelect.innerHTML = '<option value="">Select a project...</option>';
         filterProject.innerHTML = '<option value="">All Projects</option>';
 
         this.projects.forEach(project => {
-            const option1 = new Option(`${project.name} ${project.location ? '- ' + project.location : ''}`, project.id);
-            const option2 = new Option(`${project.name} ${project.location ? '- ' + project.location : ''}`, project.id);
-            projectSelect.appendChild(option1);
-            filterProject.appendChild(option2);
+            const option = new Option(`${project.name} ${project.location ? '- ' + project.location : ''}`, project.id);
+            filterProject.appendChild(option);
         });
     }
 

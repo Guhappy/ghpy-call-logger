@@ -129,6 +129,63 @@ button:hover {
     background: #229954;
 }
 
+.project-search-container {
+    position: relative;
+    width: 100%;
+}
+
+.project-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.no-results {
+    color: #7f8c8d;
+    font-style: italic;
+    cursor: default;
+}
+
+.dropdown-item.no-results:hover {
+    background-color: white;
+}
+
+.project-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 2px;
+}
+
+.project-location {
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+
 .filter-controls {
     display: flex;
     gap: 15px;

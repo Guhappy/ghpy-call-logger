@@ -20,10 +20,12 @@
                 <h2>New Log Entry</h2>
                 <form id="logForm">
                     <div class="form-group">
-                        <label for="projectSelect">Project:</label>
-                        <select id="projectSelect" required>
-                            <option value="">Select a project...</option>
-                        </select>
+                        <label for="projectSearch">Project:</label>
+                        <div class="project-search-container">
+                            <input type="text" id="projectSearch" placeholder="Type to search projects..." required>
+                            <div id="projectDropdown" class="project-dropdown"></div>
+                            <input type="hidden" id="selectedProjectId" name="selectedProjectId">
+                        </div>
                         <button type="button" id="addProjectBtn">+ Add New Project</button>
                     </div>
 
