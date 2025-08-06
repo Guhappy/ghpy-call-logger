@@ -218,7 +218,6 @@ class ProjectManager {
                     ` : ''}
                     
                     <div class="project-meta">
-                        <span>Created: ${createdDate}</span>
                         <div class="project-stats">
                             <span class="stat-item">📝 ${stats.totalLogs} logs</span>
                             ${stats.followUps > 0 ? `<span class="stat-item">📌 ${stats.followUps} follow-ups</span>` : ''}
@@ -241,6 +240,7 @@ class ProjectManager {
         document.getElementById('editProjectId').value = '';
         document.getElementById('projectEditForm').reset();
         document.getElementById('deleteProjectBtn').style.display = 'none'; // Hide delete button for new projects
+        document.getElementById('projectMetaInfo').style.display = 'none'; // Hide meta info for new projects
         document.getElementById('projectEditModal').style.display = 'block';
         document.getElementById('editProjectName').focus();
     }
@@ -258,6 +258,13 @@ class ProjectManager {
         document.getElementById('editProjectDescription').value = project.description || '';
         document.getElementById('editProjectNotes').value = project.notes || '';
         document.getElementById('deleteProjectBtn').style.display = 'inline-block'; // Show delete button for existing projects
+        
+        // Show project metadata
+        const createdDate = new Date(project.createdAt).toLocaleDateString();
+        const updatedDate = project.updatedAt ? new Date(project.updatedAt).toLocaleDateString() : null;
+        const metaText = `Created: ${createdDate}${updatedDate ? ` • Last updated: ${updatedDate}` : ''}`;
+        document.querySelector('.project-meta-text').textContent = metaText;
+        document.getElementById('projectMetaInfo').style.display = 'block';
         
         document.getElementById('projectEditModal').style.display = 'block';
         document.getElementById('editProjectName').focus();
