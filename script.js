@@ -73,6 +73,10 @@ class ProjectLogger {
             }
         });
 
+        document.getElementById('manageProjectsBtn').addEventListener('click', () => {
+            window.location.href = 'projects.html';
+        });
+
         // Project search functionality
         document.getElementById('projectSearch').addEventListener('input', (e) => {
             this.handleProjectSearch(e.target.value);
@@ -125,6 +129,8 @@ class ProjectLogger {
             name,
             location,
             description,
+            shortname: '',
+            notes: '',
             createdAt: new Date().toISOString()
         };
 
@@ -145,6 +151,8 @@ class ProjectLogger {
             name: projectName,
             location: '',
             description: '',
+            shortname: '',
+            notes: '',
             createdAt: new Date().toISOString()
         };
 
@@ -168,7 +176,7 @@ class ProjectLogger {
         }
 
         const filteredProjects = this.projects.filter(project => {
-            const projectText = `${project.name} ${project.location || ''}`.toLowerCase();
+            const projectText = `${project.name} ${project.shortname || ''} ${project.location || ''}`.toLowerCase();
             return projectText.includes(searchTerm.toLowerCase());
         });
 
@@ -430,7 +438,14 @@ class ProjectLogger {
 
     loadProjects() {
         const saved = localStorage.getItem('constructionProjects');
-        return saved ? JSON.parse(saved) : [];
+        const projects = saved ? JSON.parse(saved) : [];
+        
+        // Migrate existing projects to include new fields
+        return projects.map(project => ({
+            ...project,
+            shortname: project.shortname || '',
+            notes: project.notes || ''
+        }));
     }
 
     saveProjects() {

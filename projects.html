@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management - Construction Project Logger</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="projects.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Project Management</h1>
+            <div class="header-actions">
+                <button id="backToMainBtn" class="secondary-btn">← Back to Logger</button>
+                <button id="addNewProjectBtn" class="primary-btn">+ Add New Project</button>
+            </div>
+        </header>
+
+        <main>
+            <section class="search-section">
+                <div class="search-container">
+                    <input type="text" id="projectSearchBox" placeholder="Search projects by name, shortname, location, or description..." class="search-input">
+                    <div class="search-stats">
+                        <span id="projectCount">0 projects found</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="projects-list-section">
+                <div id="projectsList" class="projects-grid">
+                    <!-- Projects will be displayed here -->
+                </div>
+                <div id="noProjectsMessage" class="no-projects" style="display: none;">
+                    <h3>No projects found</h3>
+                    <p>Create your first project to get started!</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add/Edit Project Modal -->
+    <div id="projectEditModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modalTitle">Add New Project</h3>
+            <form id="projectEditForm">
+                <input type="hidden" id="editProjectId" value="">
+                
+                <div class="form-group">
+                    <label for="editProjectName">Project Name *</label>
+                    <input type="text" id="editProjectName" placeholder="Enter project name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editProjectShortname">Shortname</label>
+                    <input type="text" id="editProjectShortname" placeholder="Quick search shortname (e.g., ABC, MAIN, etc.)">
+                    <small>Use this for quick searching in the main logger</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editProjectLocation">Location</label>
+                    <input type="text" id="editProjectLocation" placeholder="Project location">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editProjectDescription">Description</label>
+                    <textarea id="editProjectDescription" placeholder="Project description" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editProjectNotes">Notes</label>
+                    <textarea id="editProjectNotes" placeholder="Additional notes about this project" rows="4"></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" id="cancelEditBtn" class="secondary-btn">Cancel</button>
+                    <button type="submit" class="primary-btn">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+            <h3>Delete Project</h3>
+            <p id="deleteMessage">Are you sure you want to delete this project?</p>
+            <div class="modal-actions">
+                <button type="button" id="cancelDeleteBtn" class="secondary-btn">Cancel</button>
+                <button type="button" id="confirmDeleteBtn" class="danger-btn">Delete Project</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="projects.js"></script>
+</body>
+</html>
