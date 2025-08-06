@@ -45,6 +45,10 @@ class ProjectManager {
             this.confirmDeleteProject();
         });
 
+        document.getElementById('deleteProjectBtn').addEventListener('click', () => {
+            this.handleDeleteFromModal();
+        });
+
         // Form submission
         document.getElementById('projectEditForm').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -196,7 +200,7 @@ class ProjectManager {
             const createdDate = new Date(project.createdAt).toLocaleDateString();
             
             return `
-                <div class="project-card" data-project-id="${project.id}">
+                <div class="project-card" data-project-id="${project.id}" onclick="projectManager.showEditProjectModal('${project.id}')">
                     <div class="project-card-header">
                         <h3 class="project-title">${this.escapeHtml(project.name)}</h3>
                         ${project.shortname ? `<span class="project-shortname">${this.escapeHtml(project.shortname)}</span>` : ''}
@@ -220,11 +224,6 @@ class ProjectManager {
                             ${stats.followUps > 0 ? `<span class="stat-item">📌 ${stats.followUps} follow-ups</span>` : ''}
                         </div>
                     </div>
-                    
-                    <div class="project-actions">
-                        <button class="edit-btn" onclick="projectManager.showEditProjectModal('${project.id}')">Edit</button>
-                        <button class="delete-btn" onclick="projectManager.showDeleteConfirmation('${project.id}')">Delete</button>
-                    </div>
                 </div>
             `;
         }).join('');
@@ -241,6 +240,7 @@ class ProjectManager {
         document.getElementById('modalTitle').textContent = 'Add New Project';
         document.getElementById('editProjectId').value = '';
         document.getElementById('projectEditForm').reset();
+        document.getElementById('deleteProjectBtn').style.display = 'none'; // Hide delete button for new projects
         document.getElementById('projectEditModal').style.display = 'block';
         document.getElementById('editProjectName').focus();
     }
@@ -257,6 +257,7 @@ class ProjectManager {
         document.getElementById('editProjectLocation').value = project.location || '';
         document.getElementById('editProjectDescription').value = project.description || '';
         document.getElementById('editProjectNotes').value = project.notes || '';
+        document.getElementById('deleteProjectBtn').style.display = 'inline-block'; // Show delete button for existing projects
         
         document.getElementById('projectEditModal').style.display = 'block';
         document.getElementById('editProjectName').focus();
@@ -294,6 +295,29 @@ class ProjectManager {
 
     hideDeleteModal() {
         document.getElementById('deleteConfirmModal').style.display = 'none';
+    }
+
+    handleDeleteFromModal() {
+        if (!this.currentEditingProject) return;
+        
+        const stats = this.getProjectStats(this.currentEditingProject.id);
+        
+        if (stats.totalLogs > 0) {
+            alert(`Cannot delete "${this.currentEditingProject.name}". This project has ${stats.totalLogs} log entries. Please delete all logs first.`);
+            return;
+        }
+
+        if (confirm(`Are you sure you want to delete "${this.currentEditingProject.name}"? This action cannot be undone.`)) {
+            const result = this.deleteProject(this.currentEditingProject.id);
+            
+            if (result.success) {
+                this.displayProjects();
+                this.updateProjectCount();
+                this.hideModal();
+            } else {
+                alert(result.message);
+            }
+        }
     }
 
     confirmDeleteProject(projectId) {
